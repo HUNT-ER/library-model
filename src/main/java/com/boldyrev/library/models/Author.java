@@ -12,14 +12,19 @@ import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
 @Table(name = "t_authors")
 @Getter
 @Setter
+@NoArgsConstructor
 public class Author {
 
     @Id
@@ -28,12 +33,8 @@ public class Author {
     private Long id;
 
     @NotBlank
-    @Column(name = "first_name")
-    private String firstName;
-
-    @NotBlank
-    @Column(name = "last_name")
-    private String lastName;
+    @Column(name = "name")
+    private String name;
 
     @Email
     @Column(name = "email")
@@ -43,5 +44,22 @@ public class Author {
     @JoinTable(name = "t_authors_books",
         joinColumns = @JoinColumn(name = "author_id"),
         inverseJoinColumns = @JoinColumn(name = "book_id"))
-    private List<Book> books;
+    private Set<Book> books = new HashSet<>();
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Author)) {
+            return false;
+        }
+        Author author = (Author) o;
+        return Objects.equals(id, author.id);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
 }

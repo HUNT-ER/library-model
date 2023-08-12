@@ -1,16 +1,20 @@
 package com.boldyrev.library.repositories;
 
-import com.boldyrev.library.models.Author;
 import com.boldyrev.library.models.Book;
-import java.util.List;
-import java.util.Optional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 public interface BooksRepository extends JpaRepository<Book, Long> {
 
-    List<Book> findByAuthor(Author author);
+    @Query("SELECT b FROM Book b JOIN FETCH b.authors a WHERE UPPER(a.name) LIKE CONCAT('%', UPPER(:name), '%') ")
+    Page<Book> findByAuthorName(@Param("name") String authorName, Pageable pageable);
 
-    List<Book> findByTitleContainingIgnoreCase(String title);
+    @Query("SELECT b FROM Book b JOIN FETCH b.authors WHERE UPPER(b.title) LIKE CONCAT('%', UPPER(:title), '%') ")
+    Page<Book> findByTitleContainingIgnoreCase(@Param("title") String title, Pageable pageable);
 
-    Optional<Book> findByISBN(String isbn);
+    @Query("SELECT b FROM Book b JOIN FETCH b.authors WHERE UPPER(b.ISBN) LIKE CONCAT('%', UPPER(:isbn), '%') ")
+    Page<Book> findByISBNContaining(@Param("isbn") String isbn, Pageable pageable);
 }
