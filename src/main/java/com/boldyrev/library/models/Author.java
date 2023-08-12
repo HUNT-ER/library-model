@@ -17,7 +17,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 @Entity
-@Table("t_authors")
+@Table(name = "t_authors")
 @Getter
 @Setter
 public class Author {

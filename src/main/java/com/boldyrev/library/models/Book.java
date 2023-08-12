@@ -6,12 +6,12 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import java.time.LocalDate;
 import java.util.List;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -30,12 +30,20 @@ public class Book {
     private Long id;
 
     @NotBlank
-    @Column("title")
+    @Column(name = "title")
     private String title;
 
     @NotBlank
-    @Column("ISBN")
+    @Column(name = "isbn")
     private String ISBN;
+
+    @NotNull
+    @Min(1)
+    @Column(name = "num_pages")
+    private Integer numPages;
+
+    @Column(name = "publication_date")
+    private LocalDate publicationDate;
 
     @ManyToMany(mappedBy = "books", fetch = FetchType.LAZY)
     private List<Author> authors;
