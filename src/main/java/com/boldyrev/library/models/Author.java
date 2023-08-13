@@ -12,6 +12,8 @@ import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
@@ -36,15 +38,24 @@ public class Author {
     @Column(name = "name")
     private String name;
 
-    @Email
-    @Column(name = "email")
-    private String email;
+    @NotNull
+    @Column(name = "birth_date")
+    private LocalDate birthDate;
 
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "t_authors_books",
-        joinColumns = @JoinColumn(name = "author_id"),
-        inverseJoinColumns = @JoinColumn(name = "book_id"))
+    @NotBlank
+    @Column(name = "country")
+    private String country;
+
+    @ManyToMany(mappedBy = "authors", fetch = FetchType.LAZY)
     private Set<Book> books = new HashSet<>();
+
+    public void addBook(Book book) {
+        books.add(book);
+    }
+
+    public void removeBook(Book book) {
+        books.remove(book);
+    }
 
     @Override
     public boolean equals(Object o) {

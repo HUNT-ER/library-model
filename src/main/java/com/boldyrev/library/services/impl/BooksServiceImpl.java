@@ -1,11 +1,13 @@
 package com.boldyrev.library.services.impl;
 
-import com.boldyrev.library.exceptions.DataNotFoundException;
+import com.boldyrev.library.exceptions.EntityNotFoundException;
+import com.boldyrev.library.models.Author;
 import com.boldyrev.library.models.Book;
 import com.boldyrev.library.repositories.BooksRepository;
 import com.boldyrev.library.services.BooksService;
 import com.boldyrev.library.util.validators.PageValidator;
-import jakarta.persistence.EntityNotFoundException;
+import java.util.Set;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -14,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Slf4j
 public class BooksServiceImpl implements BooksService {
 
     private final BooksRepository booksRepository;
@@ -27,33 +30,11 @@ public class BooksServiceImpl implements BooksService {
 
     @Override
     @Transactional(readOnly = true)
-    public Page<Book> findByTitleAndPage(String title, int page, int size) {
-        Page<Book> books = booksRepository.findByTitleContainingIgnoreCase(title,
+    public Page<Book> search(String title, String isbn, String authorName, int page, int size) {
+        Page<Book> books = booksRepository.findByParameters(title, isbn, authorName,
             PageRequest.of(page, size, Sort.by("title")));
 
-        pageValidator.validate(books, title);
-
-        return books;
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public Page<Book> findByAuthorNameAndPage(String authorName, int page, int size) {
-        Page<Book> books = booksRepository.findByAuthorName(authorName, PageRequest.of(page, size,
-            Sort.by("title")));
-
-        pageValidator.validate(books, authorName);
-
-        return books;
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public Page<Book> findByISBNAndPage(String ISBN, int page, int size) {
-        Page<Book> books = booksRepository.findByISBNContaining(ISBN, PageRequest.of(page, size,
-            Sort.by("title")));
-
-        pageValidator.validate(books, ISBN);
+        pageValidator.validate(books, new String[]{title, isbn, authorName});
 
         return books;
     }
@@ -61,6 +42,7 @@ public class BooksServiceImpl implements BooksService {
     @Override
     @Transactional
     public Book save(Book book) {
+        book.getAuthors().forEach(a -> a.addBook(book));
         return booksRepository.save(book);
     }
 
@@ -68,15 +50,15 @@ public class BooksServiceImpl implements BooksService {
     @Transactional
     public Book updateById(long id, Book book) {
         Book storedBook = booksRepository.findById(id)
-            .orElseThrow(() -> new EntityNotFoundException(String.format("Book with id=%d not found", id)));
+            .orElseThrow(
+                () -> new EntityNotFoundException(String.format("Book with id=%d not found", id)));
 
         storedBook.setTitle(book.getTitle());
         storedBook.setISBN(book.getISBN());
         storedBook.setPublicationDate(book.getPublicationDate());
         storedBook.setNumPages(book.getNumPages());
 
-        //todo m2m, watch
-        storedBook.setAuthors(book.getAuthors());
+        updateAuthors(storedBook, book.getAuthors());
 
         return storedBook;
     }
@@ -84,6 +66,18 @@ public class BooksServiceImpl implements BooksService {
     @Override
     @Transactional
     public void deleteById(long id) {
+
         booksRepository.deleteById(id);
+    }
+
+    @Transactional
+    public Book updateAuthors(Book book, Set<Author> authors) {
+        Set<Author> currentAuthors = book.getAuthors();
+        if (!authors.equals(currentAuthors)) {
+            currentAuthors.forEach(a -> a.removeBook(book));
+            currentAuthors.clear();
+            book.setAuthors(authors);
+        }
+        return book;
     }
 }

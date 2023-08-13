@@ -10,6 +10,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 public class AuthorsServiceImpl implements AuthorsService {
@@ -24,6 +25,7 @@ public class AuthorsServiceImpl implements AuthorsService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public Page<Author> findAllByPage(int page, int size) {
         Page<Author> authors = authorsRepository.findAll(
             PageRequest.of(page, size, Sort.by("name")));
@@ -34,25 +36,28 @@ public class AuthorsServiceImpl implements AuthorsService {
     }
 
     @Override
+    @Transactional
     public Author save(Author author) {
         return authorsRepository.save(author);
     }
 
     @Override
+    @Transactional
     public Author updateById(long id, Author author) {
         Author storedAuthor = authorsRepository.findById(id)
             .orElseThrow(() -> new EntityNotFoundException(
                 String.format("Author with id=%d not found", id)));
 
         storedAuthor.setName(author.getName());
-        storedAuthor.setEmail(author.getEmail());
-        storedAuthor.setBooks(author.getBooks());
+        storedAuthor.setBirthDate(author.getBirthDate());
+        storedAuthor.setCountry(author.getCountry());
 
         return storedAuthor;
     }
 
     @Override
+    @Transactional
     public void deleteById(long id) {
-
+        authorsRepository.deleteById(id);
     }
 }
