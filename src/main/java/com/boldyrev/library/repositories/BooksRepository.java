@@ -22,7 +22,7 @@ public interface BooksRepository extends JpaRepository<Book, Long> {
                 JOIN b.authors a 
                 WHERE UPPER(a.name) LIKE CONCAT('%', UPPER(?3), '%'))
         """)
-    Page<Book> findByParameters(String title, String isbn, String authorName, Pageable pageable);
+    Page<Book> findByParameters(String title, String ISBN, String authorName, Pageable pageable);
 
     @Override
     @Query("SELECT b from Book b JOIN FETCH b.authors a JOIN FETCH a.books WHERE b.id = :id")

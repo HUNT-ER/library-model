@@ -70,12 +70,12 @@ public class BooksController {
     @GetMapping("/search")
     public ResponseEntity<?> searchByParameters(
         @RequestParam(value = "title", defaultValue = "") String title,
-        @RequestParam(value = "isbn", defaultValue = "") String isbn,
+        @RequestParam(value = "isbn", defaultValue = "") String ISBN,
         @RequestParam(value = "author", defaultValue = "") String authorName,
         @RequestParam(value = "page", defaultValue = "0") Integer page,
         @RequestParam(value = "size", defaultValue = "5") Integer size) {
 
-        Page<BookDTO> books = booksService.search(title, isbn, authorName, page, size)
+        Page<BookDTO> books = booksService.search(title, ISBN, authorName, page, size)
             .map(bookMapper::bookToBookDTO);
 
         return ResponseEntity.ok(books);

@@ -15,12 +15,12 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import java.time.LocalDate;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.hibernate.validator.constraints.ISBN;
 
 @Entity
 @Table(name = "t_books")
@@ -39,6 +39,7 @@ public class Book {
     private String title;
 
     @NotBlank
+    @ISBN
     @Column(name = "isbn")
     private String ISBN;
 

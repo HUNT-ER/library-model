@@ -38,7 +38,7 @@ public class GlobalExceptionHandler {
         } else if (e.getMessage().contains("\"t_books\"")) {
             builder.append("books");
         } else if (e.getMessage().contains("\"t_books_isbn_key\"")) {
-            builder.append("isbn");
+            builder.append("ISBN");
         }
 
         builder.append(" is incorrect. Check id's and other values");

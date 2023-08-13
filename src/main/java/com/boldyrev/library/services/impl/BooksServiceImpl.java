@@ -8,6 +8,7 @@ import com.boldyrev.library.services.BooksService;
 import com.boldyrev.library.util.validators.PageValidator;
 import java.util.Set;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.validator.internal.constraintvalidators.hv.ISBNValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -30,11 +31,11 @@ public class BooksServiceImpl implements BooksService {
 
     @Override
     @Transactional(readOnly = true)
-    public Page<Book> search(String title, String isbn, String authorName, int page, int size) {
-        Page<Book> books = booksRepository.findByParameters(title, isbn, authorName,
+    public Page<Book> search(String title, String ISBN, String authorName, int page, int size) {
+        Page<Book> books = booksRepository.findByParameters(title, enrichISBN(ISBN), authorName,
             PageRequest.of(page, size, Sort.by("title")));
 
-        pageValidator.validate(books, new String[]{title, isbn, authorName});
+        pageValidator.validate(books, new String[]{title, ISBN, authorName});
 
         return books;
     }
@@ -43,6 +44,7 @@ public class BooksServiceImpl implements BooksService {
     @Transactional
     public Book save(Book book) {
         book.getAuthors().forEach(a -> a.addBook(book));
+        book.setISBN(enrichISBN(book.getISBN()));
         return booksRepository.save(book);
     }
 
@@ -54,7 +56,7 @@ public class BooksServiceImpl implements BooksService {
                 () -> new EntityNotFoundException(String.format("Book with id=%d not found", id)));
 
         storedBook.setTitle(book.getTitle());
-        storedBook.setISBN(book.getISBN());
+        storedBook.setISBN(enrichISBN(book.getISBN()));
         storedBook.setPublicationDate(book.getPublicationDate());
         storedBook.setNumPages(book.getNumPages());
 
@@ -79,5 +81,10 @@ public class BooksServiceImpl implements BooksService {
             book.setAuthors(authors);
         }
         return book;
+    }
+
+    private String enrichISBN(String ISBN) {
+        String nonDigitsPattern = "[^\\dX]";
+        return ISBN.replaceAll(nonDigitsPattern, "");
     }
 }

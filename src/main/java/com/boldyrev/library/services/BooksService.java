@@ -7,7 +7,7 @@ import org.springframework.data.domain.Page;
 
 public interface BooksService {
 
-    Page<Book> search(String title, String isbn, String authorName, int page, int size);
+    Page<Book> search(String title, String ISBN, String authorName, int page, int size);
 
     Book save(Book book);
 

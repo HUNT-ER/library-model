@@ -13,6 +13,7 @@ import java.time.LocalDate;
 import java.util.Set;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.validator.constraints.ISBN;
 
 @Data
 @NoArgsConstructor
@@ -26,6 +27,7 @@ public class BookDTO {
     private String title;
 
     @NotBlank(groups = {NewOrUpdateBook.class})
+    @ISBN(groups = {NewOrUpdateBook.class})
     @JsonProperty("isbn")
     private String ISBN;
 
@@ -40,5 +42,6 @@ public class BookDTO {
 
     @Valid
     @NotNull(groups = {NewOrUpdateBook.class})
+    @JsonProperty("authors")
     private Set<AuthorDTO> authors;
 }
