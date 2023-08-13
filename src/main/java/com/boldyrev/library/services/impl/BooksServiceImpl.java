@@ -7,8 +7,6 @@ import com.boldyrev.library.repositories.BooksRepository;
 import com.boldyrev.library.services.BooksService;
 import com.boldyrev.library.util.validators.PageValidator;
 import java.util.Set;
-import lombok.extern.slf4j.Slf4j;
-import org.hibernate.validator.internal.constraintvalidators.hv.ISBNValidator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -17,7 +15,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-@Slf4j
 public class BooksServiceImpl implements BooksService {
 
     private final BooksRepository booksRepository;

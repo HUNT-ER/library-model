@@ -73,7 +73,7 @@ public class BooksController {
         @RequestParam(value = "isbn", defaultValue = "") String ISBN,
         @RequestParam(value = "author", defaultValue = "") String authorName,
         @RequestParam(value = "page", defaultValue = "0") Integer page,
-        @RequestParam(value = "size", defaultValue = "5") Integer size) {
+        @RequestParam(value = "size", defaultValue = "10") Integer size) {
 
         Page<BookDTO> books = booksService.search(title, ISBN, authorName, page, size)
             .map(bookMapper::bookToBookDTO);
