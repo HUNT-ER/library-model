@@ -7,6 +7,8 @@ import com.boldyrev.library.models.Author;
 import com.boldyrev.library.services.AuthorsService;
 import com.boldyrev.library.util.mappers.AuthorMapper;
 import com.boldyrev.library.util.validators.entity_validators.AuthorValidator;
+import jakarta.validation.constraints.Positive;
+import jakarta.validation.constraints.PositiveOrZero;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
@@ -26,6 +28,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping(value = "/api/v1/authors", produces = MediaType.APPLICATION_JSON_VALUE)
+@Validated
 public class AuthorsController {
 
     private final AuthorsService authorsService;
@@ -42,8 +45,8 @@ public class AuthorsController {
 
     @GetMapping
     public ResponseEntity<?> getAllByPage(
-        @RequestParam(value = "page", defaultValue = "0") Integer page,
-        @RequestParam(value = "size", defaultValue = "10") Integer size) {
+        @RequestParam(value = "page", defaultValue = "0") @PositiveOrZero Integer page,
+        @RequestParam(value = "size", defaultValue = "10") @Positive Integer size) {
         Page<AuthorDTO> authors = authorsService.findAllByPage(page, size)
             .map(authorMapper::authorToAuthorDTO);
 

@@ -3,6 +3,7 @@ package com.boldyrev.library.exception_handling;
 import com.boldyrev.library.exceptions.DataNotFoundException;
 import com.boldyrev.library.exceptions.EntityNotFoundException;
 import com.boldyrev.library.exceptions.ValidationException;
+import jakarta.validation.ConstraintViolationException;
 import java.time.LocalDateTime;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -22,8 +23,8 @@ public class GlobalExceptionHandler {
             HttpStatus.NOT_FOUND);
     }
 
-    @ExceptionHandler({ValidationException.class})
-    public ResponseEntity<ErrorResponse> handleException(ValidationException e) {
+    @ExceptionHandler({ValidationException.class, ConstraintViolationException.class})
+    public ResponseEntity<ErrorResponse> handleException(RuntimeException e) {
         log.debug("Validation is failed, Message: {}", e.getMessage());
         return ResponseEntity.badRequest()
             .body(new ErrorResponse(e.getMessage(), LocalDateTime.now()));
