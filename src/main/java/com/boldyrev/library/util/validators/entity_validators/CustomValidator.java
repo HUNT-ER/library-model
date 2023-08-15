@@ -11,7 +11,7 @@ public abstract class CustomValidator implements Validator {
         this.entityClass = entityClass;
     }
 
-    protected String getErrors(Errors errors) {
+    public String getErrors(Errors errors) {
         StringBuilder builder = new StringBuilder();
 
         builder.append(entityClass)

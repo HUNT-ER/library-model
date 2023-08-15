@@ -43,6 +43,13 @@ public class BooksController {
         this.bookValidator = bookValidator;
     }
 
+    /**
+     * POST endpoint для создания новой книги
+     *
+     * @param book данные новой книги
+     * @param errors ошибки валидации
+     * @return сохраненная книга
+     */
     @PostMapping
     public ResponseEntity<?> create(@RequestBody @Validated(NewOrUpdateBook.class) BookDTO book,
         BindingResult errors) {
@@ -53,6 +60,14 @@ public class BooksController {
             .body(bookMapper.bookToBookDTO(savedBook)).build(), HttpStatus.CREATED);
     }
 
+    /**
+     * PUT endpoint для обновления существующей книги по ID
+     *
+     * @param id идентификатор обновляемой книги
+     * @param book книга с обновленной информацией
+     * @param errors ошибки валидации
+     * @return обновленная книга
+     */
     @PutMapping("/{id}")
     public ResponseEntity<?> updateById(@PathVariable("id") Long id,
         @RequestBody @Validated(NewOrUpdateBook.class) BookDTO book, BindingResult errors) {
@@ -60,16 +75,34 @@ public class BooksController {
         Book savedBook = booksService.updateById(id, bookMapper.bookDTOToBook(book));
 
         return ResponseEntity.ok()
+            .contentType(MediaType.APPLICATION_JSON)
             .body(CustomResponse.builder().body(bookMapper.bookToBookDTO(savedBook)).build());
     }
 
-    @DeleteMapping(value = "/{id}", consumes = {})
+    /**
+     * DELETE endpoint для удаления книги по ID
+     *
+     * @param id идентификатор удаляемой книги
+     * @return сообщение с успешным удалением
+     */
+    @DeleteMapping(value = "/{id}")
     public ResponseEntity<?> deleteById(@PathVariable("id") Long id) {
         booksService.deleteById(id);
         return ResponseEntity.ok()
+            .contentType(MediaType.APPLICATION_JSON)
             .body(CustomResponse.builder().message("Book was deleted or not exists").build());
     }
 
+    /**
+     * GET endpoint для поиска книг по названию/ISBN/имени автора
+     *
+     * @param title фильтр названия книги (по умолчанию "")
+     * @param ISBN фильтр ISBN (по умолчанию "")
+     * @param authorName фильтр имени автора (по умолчанию "")
+     * @param page номер возвращаемой страницы (по умолчаниб 0)
+     * @param size размер возвращаемой страницы (по умолчанию 10)
+     * @return страница с найденными книгами
+     */
     @GetMapping("/search")
     public ResponseEntity<?> searchByParameters(
         @RequestParam(value = "title", defaultValue = "") String title,
@@ -81,6 +114,8 @@ public class BooksController {
         Page<BookDTO> books = booksService.search(title, ISBN, authorName, page, size)
             .map(bookMapper::bookToBookDTO);
 
-        return ResponseEntity.ok(books);
+        return ResponseEntity.ok()
+            .contentType(MediaType.APPLICATION_JSON)
+            .body(books);
     }
 }

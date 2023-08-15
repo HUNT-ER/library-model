@@ -17,6 +17,7 @@ import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -27,6 +28,7 @@ import org.hibernate.validator.constraints.ISBN;
 @Getter
 @Setter
 @NoArgsConstructor
+@AllArgsConstructor
 public class Book {
 
     @Id

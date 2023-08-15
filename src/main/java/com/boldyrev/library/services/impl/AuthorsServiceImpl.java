@@ -1,10 +1,10 @@
 package com.boldyrev.library.services.impl;
 
+import com.boldyrev.library.exceptions.EntityNotFoundException;
 import com.boldyrev.library.models.Author;
 import com.boldyrev.library.repositories.AuthorsRepository;
 import com.boldyrev.library.services.AuthorsService;
 import com.boldyrev.library.util.validators.PageValidator;
-import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;

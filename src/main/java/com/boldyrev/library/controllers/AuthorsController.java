@@ -43,6 +43,13 @@ public class AuthorsController {
         this.authorValidator = authorValidator;
     }
 
+    /**
+     * GET endpoint для получения списка авторов
+     *
+     * @param page номер возвращаемой страницы (по умолчаниб 0)
+     * @param size размер возвращаемой страницы (по умолчанию 10)
+     * @return страница со списком авторов
+     */
     @GetMapping
     public ResponseEntity<?> getAllByPage(
         @RequestParam(value = "page", defaultValue = "0") @PositiveOrZero Integer page,
@@ -50,9 +57,16 @@ public class AuthorsController {
         Page<AuthorDTO> authors = authorsService.findAllByPage(page, size)
             .map(authorMapper::authorToAuthorDTO);
 
-        return ResponseEntity.ok(authors);
+        return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(authors);
     }
 
+    /**
+     * POST endpoint для сохранения нового автора
+     *
+     * @param author данные нового автора
+     * @param errors ошибки валидации
+     * @return сохраненный автор
+     */
     @PostMapping
     public ResponseEntity<?> create(
         @RequestBody @Validated(NewOrUpdateAuthor.class) AuthorDTO author,
@@ -64,20 +78,38 @@ public class AuthorsController {
             .body(authorMapper.authorToAuthorDTO(savedAuthor)).build(), HttpStatus.CREATED);
     }
 
+    /**
+     * PUT endpoint для обновления существующего автора по ID
+     *
+     * @param id идентификатор обновляемого автора
+     * @param author данные автора с обновленной информацией
+     * @param errors ошибки валидации
+     * @return обновленный автора
+     */
     @PutMapping("/{id}")
     public ResponseEntity<?> updateById(@PathVariable("id") Long id,
         @RequestBody @Validated(NewOrUpdateAuthor.class) AuthorDTO author, BindingResult errors) {
         authorValidator.validate(author, errors);
         Author savedAuthor = authorsService.updateById(id, authorMapper.authorDTOToAuthor(author));
 
-        return ResponseEntity.ok(
-            CustomResponse.builder().body(authorMapper.authorToAuthorDTO(savedAuthor)).build());
+        return ResponseEntity.ok()
+            .contentType(MediaType.APPLICATION_JSON)
+            .body(CustomResponse.builder()
+                .body(authorMapper.authorToAuthorDTO(savedAuthor)).build());
     }
 
+    /**
+     * DELETE endpoint для удаления автора по ID
+     *
+     * @param id идентификатор удаляемого автора
+     * @return сообщение с успешным удалением
+     */
     @DeleteMapping(value = "/{id}", consumes = {})
     public ResponseEntity<?> deleteById(@PathVariable("id") Long id) {
         authorsService.deleteById(id);
-        return ResponseEntity.ok(
-            CustomResponse.builder().message("Author was deleted or not exists").build());
+        return ResponseEntity.ok()
+            .contentType(MediaType.APPLICATION_JSON)
+            .body(CustomResponse.builder()
+                .message("Author was deleted or not exists").build());
     }
 }

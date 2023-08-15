@@ -1,0 +1,30 @@
+services:
+  db:
+    image: postgres
+    container_name: postgres
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: changepassword
+      POSTGRES_DB: library
+    volumes:
+      - ./src/main/resources/db/migration:/docker-entrypoint-initdb.d
+      - pg_data:/var/lib/postgresql/data
+    networks:
+      - postgres
+
+  app:
+    image: nh028/library
+    container_name: library
+    restart: always
+    depends_on:
+      - db
+    ports:
+      - 8888:8888
+    networks:
+      - postgres
+
+volumes:
+  pg_data:
+
+networks:
+  postgres:

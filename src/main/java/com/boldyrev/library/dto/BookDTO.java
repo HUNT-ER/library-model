@@ -11,12 +11,14 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Null;
 import java.time.LocalDate;
 import java.util.Set;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.validator.constraints.ISBN;
 
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 @JsonInclude(Include.NON_NULL)
 public class BookDTO {
 
