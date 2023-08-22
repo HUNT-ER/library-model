@@ -20,6 +20,7 @@ This API allows you to do create, read, update, delete (CRUD) operations on Book
 - change [application.properties](src/main/resources/application.properties) file based on your database configurations
 - run the project using [LibraryApplication.java](src/main/java/com/boldyrev/library/LibraryApplication.java)
 
+# API Reference 
 ## Authors operations
 
 **GET** `/api/authors?page&size`
