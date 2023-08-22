@@ -1,6 +1,20 @@
 # Library Model API
 This API allows you to do create, read, update, delete (CRUD) operations on Books and Authors. Supports search books by name, author and ISBN number. 
 
+# Build with
+- Spring Boot
+- Spring Data JPA
+- Spring Web MVC
+- Hibernate
+- PostgreSQL
+- AOP
+- Lombok
+- Docker
+- Spring Boot Test
+- Mockito
+- Testcontainers
+- Flyway
+
 ## Set up 
 - [*clone*](https://github.com/HUNT-ER/library-model.git) the project
 - change [application.properties](src/main/resources/application.properties) file based on your database configurations
@@ -61,18 +75,6 @@ deletes book by Id
 
 # Entity diagram
 ![Модель данных](https://github.com/HUNT-ER/library-model/assets/38404914/27d33c26-fe64-4101-a35b-27dc07e67ab1)
-
-# Build with
-- Spring Boot
-- Spring Data JPA
-- Spring Web MVC
-- Hibernate
-- Lombok
-- Docker
-- Spring Boot Test
-- Mockito
-- Testcontainers
-- Flyway
 
 # What I learned
 - Improved skills in Spring Boot, unit testing, Docker, Entity relationships, API Architecture
