@@ -68,10 +68,11 @@ deletes book by Id
 - Spring Web MVC
 - Hibernate
 - Lombok
+- Docker
 - Spring Boot Test
 - Mockito
 - Testcontainers
 - Flyway
 
 # What I learned
-- Improved skills in Spring Boot, Docker, Entity relationships, API Architecture
+- Improved skills in Spring Boot, unit testing, Docker, Entity relationships, API Architecture
